@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Contador de Cuenta Regresiva</title>
+  <style>
+    body {
+      background-color: #f1f1f1;
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    .cronometro {
+      font-size: 48px;
+      color: #333;
+    }
+
+    .boton {
+      padding: 10px 20px;
+      font-size: 18px;
+      background-color: #4CAF50;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      margin: 10px;
+      transition: background-color 0.3s;
+    }
+
+    .boton:hover {
+      background-color: #45a049;
+    }
+
+    .inputTiempo {
+      font-size: 18px;
+      padding: 5px;
+    }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.3.3/howler.min.js"></script>
+  <script type="text/javascript">
+    var tiempoInicial = 0;
+    var tiempoRestante = tiempoInicial;
+    var contador;
+    var alarma;
+
+    function iniciarContador() {
+      var minutos = parseInt(document.getElementById('inputMinutos').value);
+      tiempoInicial = minutos * 60;
+      tiempoRestante = tiempoInicial;
+      
+      if (isNaN(tiempoInicial)) {
+        alert("Ingresa un valor válido en minutos.");
+        return;
+      }
+
+      contador = setInterval(function() {
+        tiempoRestante--;
+        actualizarTiempo();
+        if (tiempoRestante <= 0) {
+          detenerContador();
+          alert("¡Tiempo agotado!");
+          reproducirAlarma();
+        }
+      }, 1000);
+    }
+
+    function detenerContador() {
+      clearInterval(contador);
+    }
+
+    function reiniciarContador() {
+      detenerContador();
+      tiempoRestante = tiempoInicial;
+      actualizarTiempo();
+    }
+
+    function actualizarTiempo() {
+      var minutos = Math.floor(tiempoRestante / 60);
+      var segundos = tiempoRestante % 60;
+
+      // Asegurarse de que los minutos y segundos tienen siempre dos dígitos
+      minutos = String(minutos).padStart(2, '0');
+      segundos = String(segundos).padStart(2, '0');
+
+      document.getElementById('tiempo').innerHTML = minutos + ':' + segundos;
+    }
+
+    function reproducirAlarma() {
+      alarma = new Howl({
+        src: ['alarma.mp3'],
+        volume: 1.0
+      });
+      alarma.play();
+    }
+  </script>
+</head>
+<body>
+  <h1>Contador de Cuenta Regresiva</h1>
+  <div class="cronometro" id="tiempo">00:00</div>
+  <label for="inputMinutos">Minutos:</label>
+  <input class="inputTiempo" type="number" id="inputMinutos" min="1" value="1">
+  <button class="boton" onclick="iniciarContador()">Iniciar</button>
+  <button class="boton" onclick="detenerContador()">Detener</button>
+  <button class="boton" onclick="reiniciarContador()">Reiniciar</button>
+</body>
+</html>
